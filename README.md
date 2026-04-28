@@ -1,304 +1,144 @@
 # NyxHive
 
-Self-improving personal runtime. Handles direct assistant work, engineering execution, and specialist delegation when it adds leverage. Supports Discord, Telegram, Slack, iMessage, iOS app, and REST API channels. SQLite everywhere, no external database dependencies.
+NyxHive was an experimental personal agent runtime for exploring what it takes to move from "chat with an AI" to a working, trust-bounded agent system.
 
-Trust model:
-- One trusted operator boundary owns privileged runtime work.
-- Paired DMs are the normal surface for side effects such as memory writes, reminders, file changes, and external sends.
-- Public channels stay public-safe. Nyx answers there, but does not treat them like a privileged paired session.
+It is archived now. This repository is preserved as a public snapshot of the project, not as an actively maintained product or a recommended production deployment.
 
-## Install
+## What it was
 
-One line, fresh machine or existing:
+NyxHive was built around a simple idea: one lead assistant should be able to coordinate useful work across tools, channels, memory, and specialist workers without losing the human approval boundary.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/AgentNyxAI/NyxHive/master/scripts/remote-install.sh | bash
-```
+The project explored a local-first runtime for:
 
-This will:
-1. Check prerequisites (bun, git, claude CLI)
-2. Clone the repo to `~/.nyxhive/app`
-3. Install dependencies
-4. Symlink `nyxhive` into your PATH
-5. Launch the interactive setup wizard
+- receiving requests from chat surfaces and APIs
+- routing work through queues and agent workers
+- keeping conversation, memory, and execution state separate
+- delegating bounded tasks to specialist agents
+- gating side effects behind trust rules and approval flows
+- running multiple isolated instances for different workspaces
+- exposing a small command-line/runtime layer around the whole system
 
-### What the Setup Asks
+In practice, it became a learning ground for real-world agent engineering: not just prompting, but orchestration, isolation, memory, queues, approvals, observability, and the messy operational glue agents need before they are actually useful.
 
-```
-NyxHive Setup
-─────────────
+## Why it existed
 
-  Setup type [fresh/move] (fresh):
-```
+The goal was to understand how an AI assistant could become an operational partner instead of a stateless chatbot.
 
-**Fresh** — Creates a new, empty instance. Scaffolds config, env template, data directories. Good for spinning up a brand new agent team.
+NyxHive tested questions like:
 
-**Move** — Clones an existing project repo onto this machine. Picks a preset (e.g. `nyxlabs`) or accepts any git URL. Installs deps, detects env templates, and gets you to a working checkout.
+- How should an agent decide when to answer directly versus delegate?
+- What should be remembered, and what should stay ephemeral?
+- How do you keep private or privileged work out of public channels?
+- How do you let agents touch files, repos, messages, and tools without turning them into chaos goblins?
+- How do you make long-running agent work reviewable by a human?
+- How do multiple agent instances communicate without sharing all state?
 
-### Manual Install (Dev)
+That exploration eventually fed into newer, cleaner agent workflows. NyxHive did its job: it taught the hard parts.
 
-```bash
-git clone https://github.com/AgentNyxAI/NyxHive.git
-cd NyxHive
-bun install
-bash scripts/install.sh   # symlink nyxhive to PATH
-```
+## What it explored
 
-## Engine vs Instances
+High-level areas in the codebase include:
 
-NyxHive separates **engine** (this repo) from **instances** (deployments).
+- **Channel adapters** — Discord, Telegram, Slack, iMessage-style local messaging, iOS/gateway experiments, and REST endpoints.
+- **Queue and conversation runtime** — message classification, conversation management, task routing, and response parsing.
+- **Delegation** — a lead agent dispatching bounded work to specialist subprocesses.
+- **Memory systems** — conversation memory, graph-style knowledge, execution traces, and knowledge ingestion experiments.
+- **Trust boundaries** — paired/private contexts versus public channels, command guards, credential handling, and approval gates.
+- **Instance isolation** — separating engine/runtime concerns from per-workspace configuration and state.
+- **Federation experiments** — relaying work between isolated agent instances instead of sharing one global brain.
+- **CLI and setup tooling** — commands for starting, stopping, inspecting, bootstrapping, and managing local agent instances.
+- **Gateway/workspace UI experiments** — browser-facing control surfaces for monitoring and interacting with the runtime.
 
-**Engine** — The runtime, CLI, and soul base rules. Installed once, globally available as `nyxhive`.
+The stack was mostly TypeScript/Bun, SQLite, Hono, local config files, and CLI-driven workflows.
 
-**Instance** — A self-contained, portable directory:
+## What it was useful for
 
-```
-my-workspace/
-  .nyxhive/
-    config.toml          # Agents, channels, server port, remotes
-    souls/instance.yaml  # Instance identity and context
-    .env                 # API keys, secrets (never committed)
-    .env.template        # Required keys template (committed)
-  .claude/
-    CLAUDE.md            # Soul-compiled agent instructions
-    settings.json        # Claude Code hooks
-  .mcp.json              # MCP server config
-  AGENTS.md              # Agent instructions
-  PLATFORM.md            # Platform docs (auto-generated on boot)
-  src/...                # Your actual code
-```
+NyxHive was useful as a sandbox for learning how agent systems break in real life:
 
-Runtime state lives outside the workspace:
+- ambiguous user intent
+- missing context
+- unsafe default actions
+- overly broad tool access
+- memory pollution
+- channel-specific trust problems
+- long-running work with weak feedback loops
+- the gap between a good demo and a system you can safely live with
 
-```
-~/.nyxhive/
-  app/                   # Engine installation (from remote-install)
-  bookmarks.json         # Maps instance names to workspace paths
-  data/{name}/           # SQLite DBs, PID file, browser profile
-```
+It helped turn those lessons into more practical patterns: smaller workers, clearer scopes, explicit handoffs, stronger verification, and stricter separation between personal, project, and production contexts.
 
-Instances are fully isolated. No shared state, no global registry. Move one to another machine and it just works.
+## Current status
 
-## Multi-Instance Federation
+Archived / retired.
 
-Each instance runs independently with its own port, agents, databases, and MCP server. Instances communicate through federation relay, not shared state.
+This repo is a sanitized public snapshot. The original development history is intentionally not included, because it contained private local context and operational details that do not belong in a public archive.
 
-### Current Instances
+Expect rough edges:
 
-| Instance | Role | Port |
-|----------|------|------|
-| NyxAI (Nyx) | Lead engineering, NyxHive development | 3777 |
-| Acme (Morph) | Acme day-job workspace | 3779 |
-| NyxLabs (Vortex) | Trading journal, NyxLabs projects | 3778 |
+- docs may describe experiments rather than stable behavior
+- some flows were built for a specific local setup
+- integrations may require credentials or services that are not included
+- this is not maintained as an installable product
 
-### Cross-Instance Dispatch
+If you are reading it, the most useful lens is: **agent runtime research notebook with code attached**.
 
-```toml
-[remotes.acme]
-url = "http://localhost:3779"
-api_key_env = "OPTIPLY_REMOTE_API_KEY"
-```
+## Repository map
 
-Star topology: a central instance dispatches outward via relay. Leaves don't know about each other.
+A rough guide to the major areas:
 
-When `server.public_url` is set, the instance advertises a reachable URL for remote delegation callbacks. Without it, relay falls back to `http://localhost:{port}`. For multi-machine setups, `public_url` is required.
-
-### Remote Contract
-
-Each instance exposes its addressability at:
-- `GET /api/info` — advertised base URL, MCP URL, relay URL
-- `GET /health` — health status with remote contract warnings
-- `nyxhive status` — CLI view of the same
-
-## Deploying to Another Machine
-
-Two paths depending on what you're doing.
-
-### Path 1: Fresh Instance (new agent team)
-
-```bash
-# On the target machine:
-curl -fsSL https://raw.githubusercontent.com/AgentNyxAI/NyxHive/master/scripts/remote-install.sh | bash
-# Choose "fresh" at setup prompt
-# Edit .nyxhive/config.toml — set agents, channels, server.port, server.public_url
-# Edit .nyxhive/.env — add API keys
-nyxhive start
-```
-
-### Path 2: Move Existing Project
-
-```bash
-# On the target machine:
-curl -fsSL https://raw.githubusercontent.com/AgentNyxAI/NyxHive/master/scripts/remote-install.sh | bash
-# Choose "move" at setup prompt
-# Pick a preset (nyxlabs) or paste a git URL
-# The setup clones the repo, installs deps, detects env templates
-cd ~/your-project
-nyxhive start
-```
-
-### Path 3: Bootstrap (automated provisioning)
-
-For scripted deployments or CI:
-
-```bash
-nyxhive bootstrap --target /opt/nyxhive-vortex \
-  --git-url git@github.com:example-org/NyxLabs.git \
-  --config .nyxhive/config.toml \
-  --service --start
-```
-
-Flags: `--repo <dir>` (copy local), `--git-url <url>` (clone remote), `--git-ref <tag>`, `--env-file <path>`, `--service` (install OS service), `--start` (start after provision), `--dry-run`.
-
-### After Deployment
-
-1. Set `server.public_url` in config if the instance needs to be reachable from other instances
-2. On the hub instance, add a `[remotes.name]` entry pointing to the new instance
-3. Verify: `nyxhive health` on the remote, check `/api/info` shows correct URLs
-
-### Sharing with a Collaborator
-
-Your coworker can use NyxHive against their own project repo:
-
-```bash
-# Install engine
-curl -fsSL https://raw.githubusercontent.com/AgentNyxAI/NyxHive/master/scripts/remote-install.sh | bash
-
-# Choose "move", paste the project git URL
-# They get the repo + engine, configure their own .env and agents
-nyxhive start
-```
-
-They pull engine updates with:
-```bash
-nyxhive update
-```
-
-## CLI Reference
-
-```
-nyxhive <command> [instance] [options]
-
-Core:
-  init [dir]                  Create a new instance
-  start [name] [-d]           Start instance (daemon mode with -d)
-  stop [name] [--force]       Stop instance
-  restart [name] [-d]         Restart instance
-  status [name]               Show instance status + remote contract
-  health [name]               Validate config, DBs, API keys
-  logs [name] [-f] [-n]       Tail instance logs
-  list                        List all instances
-
-Setup:
-  setup                       Interactive setup (fresh or move)
-  update [--check] [--dry-run] Update the installed engine checkout
-  deploy [name]               Deploy updates to running instance
-  bootstrap --target <dir>    Provision a clean host/directory
-  rollback [name]             Rollback a deploy
-  service install|uninstall   OS service (launchd/systemd)
-
-Access:
-  devices [list|approve|revoke]    Manage gateway devices
-  pairing [list|approve|revoke]    Manage channel pairing
-  workspace [list|start|stop|status|doctor]
-                                   Manage workspace control-plane profiles
-
-Data:
-  ingest [vault-path]              Ingest knowledge base
-  backup [list]                    Database backups
-  migrate [--status|--dry-run]     Database migrations
-  config [name]                    Show resolved config
-  instances [list|add|remove]      Manage instance registry
-  templates [list|validate|save]   Manage templates
-```
-
-Instance resolution: `--config` flag > bookmark name > CWD `.nyxhive/config.toml` > legacy paths.
-
-## Architecture
-
-```
-Channel (Discord/Telegram/Slack/iMessage/iOS/API)
-  |
-  v
-Message Classifier
-  |
-  v
-Queue Processor
-  |--- conversation --> Conversation Manager
-  |--- operations ----> Workspace control plane (/operations, jobs, tasks, profiles, memory)
-  |--- delegation ----> Delegation Engine --> Agent subprocess (Claude Code SDK)
-  |--- management ----> Management Action Executor
-  |
-  v
-Response Parser (action tags: [@agent:], [@learn:], [@propose:], etc.)
-  |
-  v
-Channel (reply)
-```
-
-### Soul System
-
-Three-layer compilation:
-
-1. **Engine `souls/base.yaml`** — Behavioral rules shared across all instances
-2. **Instance `souls/instance.yaml`** — Identity and context per deployment
-3. **Agent souls** — Per-agent personality (v2 Markdown directories in `souls/<agent>/` or v1 YAML)
-
-### Core Concepts
-
-**Agents** — Specialized AI workers invoked as CLI subprocesses. Nyx (lead, codes directly + delegates), Analyst (research), Tester (QA).
-
-**Delegation** — Nyx dispatches via `[@agent: task]` tags. Contracts extract file paths, verification hints, and output expectations. Zero LLM cost (heuristic-based).
-
-**Proposals** — Autonomy gate. Lifecycle: proposed > reviewing > reviewed > approved > executing > completed > merged. Auto-creates GitHub PRs. Maintenance+small+safe = auto-approve; features+protected paths = require approval.
-
-**Memory** — Graph memory, conversation memory, knowledge store, execution traces, Obsidian integration. `[@learn:]` tags extract knowledge from agent responses.
-
-**Federation** — Durable bidirectional relay between instances. Relay tokens persist in SQLite, survive restarts, and support long-running cross-instance tasks.
-
-## Project Structure
-
-```
+```text
 src/
-  index.ts             Server entry point (Hono)
-  types.ts             Shared types
-  config.ts            TOML config loader
-  config-schema.ts     Zod schema validation
+  agents/              agent invocation, routing, registry, actor parsing
+  auth/                auth/session/RBAC experiments
+  browser/             local browser/profile management
+  channels/            chat and messaging adapters
+  cli/                 nyxhive command-line interface
+  context/             context assembly and token-budget experiments
+  development/         autonomous development loop experiments
+  federation/          cross-instance relay and remote dispatch
+  learning/            knowledge extraction experiments
+  mcp/                 MCP server/tooling experiments
+  memory/              graph, conversation, knowledge, and trace memory
+  proposals/           approval/proposal lifecycle
+  providers/           LLM provider adapters
+  queue/               message queue and conversation processor
+  scheduler/           cron and one-shot task scheduling
+  security/            command and delegation guards
+  server/              Hono server routes and middleware
+  setup/               init/setup/bootstrap flows
+  soul/                prompt/persona compilation experiments
 
-  agents/              Invocation, routing, registry, actor parsing
-  auth/                User auth (bcrypt, sessions, RBAC)
-  browser/             Browser launcher, per-instance profile management
-  channels/            Discord, Telegram, Slack, iMessage, iOS
-  cli/                 CLI (start/stop/init/setup/bootstrap/deploy)
-  context/             Context window management, token budgets
-  development/         Autonomous dev loop
-  federation/          Cross-instance relay, remote dispatch
-  learning/            Knowledge extraction from agent responses
-  mcp/                 MCP server (tools, coordination, Brave search)
-  memory/              Graph, conversation, knowledge, traces, Obsidian
-  proposals/           Autonomy gate, proposal lifecycle
-  providers/           LLM providers (Anthropic, OpenRouter, MiniMax)
-  queue/               Message queue, delegation engine, conversation manager
-  scheduler/           Cron + one-shot task scheduler
-  security/            Credential vault, command guard, delegation guard
-  server/              Hono routes, SSE streaming, middleware
-  setup/               Init wizard
-  soul/                Soul compiler (v2 directories + v1 YAML), runtime
-
-scripts/
-  install.sh           Local CLI installer (symlink + PATH)
-  remote-install.sh    One-line remote installer
-  uninstall.sh         Remove CLI symlink
-
-souls/
-  base.yaml            Engine behavioral rules (shared across all instances)
-  nyx/                 Nyx agent soul (identity, personality, philosophy)
-  _base/               Shared defaults for v2 agents
-
-templates/             Instance templates
+docs/                  design notes, plans, and retrospectives
+plans/                 implementation ledgers and planning notes
+souls/                 agent/persona configuration experiments
+templates/             instance templates
+config/                example runtime configuration
 ```
 
-## Links
+## Running it
 
-- [CLAUDE.md](./CLAUDE.md) — Detailed architecture reference, conventions, gotchas
-- [docs/what-is-nyxhive.md](./docs/what-is-nyxhive.md) — Product overview
+This archive is not presented as a polished install path. If you still want to inspect it locally:
+
+```bash
+bun install
+bun run typecheck
+bun test
+```
+
+Those were the verification commands used when preparing the public snapshot.
+
+## Relationship to newer work
+
+NyxHive was a stepping stone. It helped clarify that the winning shape was less "one giant self-improving hive" and more:
+
+- small scoped workers
+- explicit delegation contracts
+- profile/project isolation
+- human-readable plans and summaries
+- verification before claiming success
+- conservative tool boundaries
+
+That lesson carried forward into newer Hermes/Pi-style workflows.
+
+## License
+
+No license is currently declared. Treat this as source-available archival material unless a license is added later.
