@@ -1,0 +1,547 @@
+<div align="center">
+
+<img src="./public/hermes-avatar.webp" alt="Nyx Workspace" width="80" style="border-radius: 16px" />
+
+# Nyx Workspace
+
+**Your AI agent's command center — chat, files, memory, skills, and terminal in one place.**
+
+[![Version](https://img.shields.io/badge/version-1.0.0-6366F1.svg)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-6366F1.svg)](CONTRIBUTING.md)
+
+> Not a chat wrapper. A complete workspace — orchestrate agents, browse memory, manage skills, and control everything from one interface.
+
+![Nyx Workspace](./docs/screenshots/splash.png)
+
+</div>
+
+---
+
+## ✨ Features
+
+- 🤖 **Nyx Gateway Integration** — Direct gateway connection with real-time SSE streaming
+- 🎨 **8-Theme System** — Official, Classic, Slate, Mono — each with light and dark variants
+- 🔒 **Security Hardened** — Auth middleware on all API routes, CSP headers, exec approval prompts
+- 📱 **Mobile-First PWA** — Full feature parity on any device via Tailscale
+- ⚡ **Live SSE Streaming** — Real-time agent output with tool call rendering
+- 🧠 **Memory & Skills** — Browse, search, and edit agent memory; explore 2,000+ skills
+- 🛠️ **Operations Hub** — Mission Control, Crew Posture, and Run Ledger in one control plane
+
+---
+
+## 📸 Screenshots
+
+|                 Chat                 |                 Files                  |
+| :----------------------------------: | :------------------------------------: |
+| ![Chat](./docs/screenshots/chat.png) | ![Files](./docs/screenshots/files.png) |
+
+|                   Terminal                   |                  Memory                  |
+| :------------------------------------------: | :--------------------------------------: |
+| ![Terminal](./docs/screenshots/terminal.png) | ![Memory](./docs/screenshots/memory.png) |
+
+|                  Skills                  |                   Settings                   |
+| :--------------------------------------: | :------------------------------------------: |
+| ![Skills](./docs/screenshots/skills.png) | ![Settings](./docs/screenshots/settings.png) |
+
+---
+
+## 🚀 Quick Start
+
+Nyx Workspace works with any OpenAI-compatible backend. If your backend also exposes Nyx gateway APIs, enhanced features like sessions, memory, skills, and jobs unlock automatically.
+
+### Prerequisites
+
+- **Node.js 22+** — [nodejs.org](https://nodejs.org/)
+- **An OpenAI-compatible backend** — local, self-hosted, or remote
+- **Optional:** Python 3.11+ if you want to run a Nyx gateway locally
+
+### Step 1: Start your backend
+
+Point Nyx Workspace at any backend that supports:
+
+- `POST /v1/chat/completions`
+- `GET /v1/models` recommended
+
+Example Nyx gateway setup:
+
+```bash
+git clone https://github.com/outsourc-e/nyxhive.git
+cd nyxhive
+bun install
+bun run hive:start
+```
+
+If you're using another OpenAI-compatible server, just note its base URL.
+
+### Step 2: Install & Run Nyx Workspace
+
+```bash
+# In a new terminal
+git clone https://github.com/outsourc-e/nyx-workspace.git
+cd nyx-workspace
+pnpm install
+cp .env.example .env
+printf '\nNYX_WORKSPACE_API_URL=http://127.0.0.1:3777\n' >> .env
+pnpm dev                   # Starts on http://localhost:3000
+```
+
+> **Verify:** Open `http://localhost:3000` and complete the onboarding flow. First connect the backend, then verify chat works. If your gateway exposes Nyx APIs, advanced features appear automatically.
+
+### Workspace operator commands
+
+If you are running the NyxHive monorepo directly, prefer the built-in workspace wrapper instead of hand-managing tmux sessions:
+
+```bash
+nyx workspace list
+nyx workspace start
+nyx workspace status
+nyx workspace doctor
+```
+
+That wrapper owns the standard `start | stop | status | doctor` flow for workspace profiles and is the intended bootstrap path for local operator setups.
+
+### Environment Variables
+
+```env
+# OpenAI-compatible backend URL
+NYX_WORKSPACE_API_URL=http://127.0.0.1:3777
+
+# Optional provider keys for Nyx gateway-managed config
+ANTHROPIC_API_KEY=your-key-here
+
+# Optional: password-protect the web UI
+# NYX_WORKSPACE_PASSWORD=your_password
+```
+
+---
+
+## 🧠 Local Models (Ollama, Atomic Chat, LM Studio, vLLM)
+
+Nyx Workspace supports two modes with local models:
+
+### Portable Mode (Easiest)
+
+Point the workspace directly at your local server — no Nyx gateway needed.
+
+### Atomic Chat
+
+```bash
+# Start workspace pointed at Atomic Chat
+NYX_WORKSPACE_API_URL=http://127.0.0.1:1337/v1 pnpm dev
+```
+
+Download [Atomic Chat](https://atomic.chat/), launch the desktop app, and make sure a model is loaded before starting Nyx Workspace.
+
+### Ollama
+
+```bash
+# Start Ollama
+OLLAMA_ORIGINS=* ollama serve
+
+# Start workspace pointed at Ollama
+NYX_WORKSPACE_API_URL=http://127.0.0.1:11434 pnpm dev
+```
+
+Chat works immediately. Sessions, memory, and skills show "Not Available" — that's expected in portable mode.
+
+### Enhanced Mode (Full Features)
+
+Route through the Nyx gateway for sessions, memory, skills, jobs, and tools.
+
+Here are two explicit `~/.nyxhive/config.yaml` examples for the local providers we support directly in the workspace:
+
+**Atomic Chat**
+
+```yaml
+provider: atomic-chat
+model: your-model-name
+custom_providers:
+  - name: atomic-chat
+    base_url: http://127.0.0.1:1337/v1
+    api_key: atomic-chat
+    api_mode: chat_completions
+```
+
+**Ollama**
+
+```yaml
+provider: ollama
+model: qwen3:32b
+custom_providers:
+  - name: ollama
+    base_url: http://127.0.0.1:11434/v1
+    api_key: ollama
+    api_mode: chat_completions
+```
+
+You can adapt the same shape for other OpenAI-compatible local runners, but `Atomic Chat` and `Ollama` are the two built-in local paths documented in the workspace UI.
+
+**2. Enable the API server in `~/.nyxhive/.env`:**
+
+```env
+API_SERVER_ENABLED=true
+```
+
+**3. Start the gateway and workspace:**
+
+```bash
+bun run hive:start          # Starts on :3777
+NYX_WORKSPACE_API_URL=http://127.0.0.1:3777 pnpm dev
+```
+
+All workspace features unlock automatically — sessions persist, memory saves across chats, skills are available, and the dashboard shows real usage data.
+
+Once the workspace is up, `/operations` is the operator hub:
+
+- `Mission Control` launches structured work with explicit mode, assignee, and autonomy
+- `Crew Posture` shows who is busy, blocked, or drifting
+- `Run Ledger` shows active, stalled, handoff, and error state without digging through chat
+
+> **Works with any OpenAI-compatible server** — Atomic Chat, Ollama, LM Studio, vLLM, llama.cpp, LocalAI, etc. Just change the `base_url` and `model` in the config above.
+
+---
+
+## 🐳 Docker Quickstart
+
+[![Open in GitHub Codespaces](https://img.shields.io/badge/GitHub%20Codespaces-Open-181717?logo=github)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=outsourc-e/nyx-workspace)
+
+The Docker setup runs both the **Nyx gateway** and **Nyx Workspace** together.
+
+### Prerequisites
+
+- **Docker**
+- **Docker Compose**
+- **Anthropic API Key** — [Get one here](https://console.anthropic.com/settings/keys) (required for the agent gateway)
+
+### Step 1: Configure Environment
+
+```bash
+git clone https://github.com/outsourc-e/nyx-workspace.git
+cd nyx-workspace
+cp .env.example .env
+```
+
+Edit `.env` and add your API key:
+
+```env
+ANTHROPIC_API_KEY=your-key-here
+```
+
+> **Important:** The `nyxhive` container requires `ANTHROPIC_API_KEY` to function. Without it, the gateway will fail to authenticate.
+
+### Step 2: Start the Services
+
+```bash
+docker compose up
+```
+
+This starts two services:
+
+- **nyxhive** — The AI agent gateway (port 3777)
+- **nyx-workspace** — The web UI (port 3000)
+
+### Step 3: Access the Workspace
+
+Open `http://localhost:3000` and complete the onboarding.
+
+> **Verify:** Check the Docker logs for `[gateway] Connected to Nyx` — this confirms the workspace successfully connected to the agent.
+
+---
+
+## 📱 Install as App (Recommended)
+
+Nyx Workspace is a **Progressive Web App (PWA)** — install it for the full native app experience with no browser chrome, keyboard shortcuts, and offline support.
+
+### 🖥️ Desktop (macOS / Windows / Linux)
+
+1. Open Nyx Workspace in **Chrome** or **Edge** at `http://localhost:3000`
+2. Click the **install icon** (⊕) in the address bar
+3. Click **Install** — Nyx Workspace opens as a standalone desktop app
+4. Pin to Dock / Taskbar for quick access
+
+> **macOS users:** After installing, you can also add it to your Launchpad.
+
+### 📱 iPhone / iPad (iOS Safari)
+
+1. Open Nyx Workspace in **Safari** on your iPhone
+2. Tap the **Share** button (□↑)
+3. Scroll down and tap **"Add to Home Screen"**
+4. Tap **Add** — the Nyx Workspace icon appears on your home screen
+5. Launch from home screen for the full native app experience
+
+### 🤖 Android
+
+1. Open Nyx Workspace in **Chrome** on your Android device
+2. Tap the **three-dot menu** (⋮) → **"Add to Home screen"**
+3. Tap **Add** — Nyx Workspace is now a native-feeling app on your device
+
+---
+
+## 📡 Mobile Access via Tailscale
+
+Access Nyx Workspace from anywhere on your devices — no port forwarding, no VPN complexity.
+
+### Setup
+
+1. **Install Tailscale** on your Mac and mobile device:
+   - Mac: [tailscale.com/download](https://tailscale.com/download)
+   - iPhone/Android: Search "Tailscale" in the App Store / Play Store
+
+2. **Sign in** to the same Tailscale account on both devices
+
+3. **Find your Mac's Tailscale IP:**
+
+   ```bash
+   tailscale ip -4
+   # Example output: 100.x.x.x
+   ```
+
+4. **Open Nyx Workspace on your phone:**
+
+   ```
+   http://100.x.x.x:3000
+   ```
+
+5. **Add to Home Screen** using the steps above for the full app experience
+
+> 💡 Tailscale works over any network — home wifi, mobile data, even across countries. Your traffic stays end-to-end encrypted.
+
+---
+
+## 🖥️ Native Desktop App
+
+> **Status: In Development** — A native Electron-based desktop app is in active development.
+
+The desktop app will offer:
+
+- Native window management and tray icon
+- System notifications for agent events and mission completions
+- Auto-launch on startup
+- Deep OS integration (macOS menu bar, Windows taskbar)
+
+**In the meantime:** Install Nyx Workspace as a PWA (see above) for a near-native desktop experience — it works great.
+
+---
+
+## ☁️ Cloud & Hosted Setup
+
+> **Status: Coming Soon**
+
+A fully managed cloud version of Nyx Workspace is in development:
+
+- **One-click deploy** — No self-hosting required
+- **Multi-device sync** — Access your agents from any device
+- **Team collaboration** — Shared mission control for your whole team
+- **Automatic updates** — Always on the latest version
+
+Features pending cloud infrastructure:
+
+- Cross-device session sync
+- Team shared memory and workspaces
+- Cloud-hosted backend with managed uptime
+- Webhook integrations and external triggers
+
+---
+
+## ✨ Features
+
+### 💬 Chat
+
+- Real-time SSE streaming with tool call rendering
+- Agent-authored artifact events surfaced in the inspector
+- Multi-session management with full history
+- Markdown + syntax highlighting
+- Chronological message ordering with merge dedup
+- Inspector panel for session activity, memory, and skills
+
+### 🧠 Memory
+
+- Browse and edit agent memory files
+- Search across memory entries
+- Markdown preview with live editing
+
+### 🧩 Skills
+
+- Browse 2,000+ skills from the registry
+- View skill details, categories, and documentation
+- Skill management per session
+
+### 📁 Files
+
+- Full workspace file browser
+- Navigate directories, preview and edit files
+- Monaco editor integration
+
+### 💻 Terminal
+
+- Full PTY terminal with cross-platform support
+- Persistent shell sessions
+- Direct workspace access
+
+### 🎨 Themes
+
+- 8 themes: Official, Classic, Slate, Mono — each with light and dark variants
+- Theme persists across sessions
+- Full mobile dark mode support
+
+### 🔒 Security
+
+- Auth middleware on all API routes
+- CSP headers via meta tags
+- Path traversal prevention on file/memory routes
+- Rate limiting on endpoints
+- Optional password protection for web UI
+
+---
+
+## 🔧 Troubleshooting
+
+### "Workspace loads but chat doesn't work"
+
+The workspace auto-detects your gateway's capabilities on startup. Check your terminal for a line like:
+
+```
+[gateway] http://127.0.0.1:3777 available: health, models; missing: sessions, skills, memory, config, jobs
+[gateway] Missing Nyx APIs detected. Update NyxHive: cd nyxhive && git pull && bun install && bun run hive:start
+```
+
+**Fix:** Use our fork which includes extended gateway endpoints:
+
+```bash
+git clone https://github.com/outsourc-e/nyxhive.git
+bun run hive:start
+```
+
+### "Connection refused" or workspace hangs on load
+
+Your Nyx gateway isn't running. Start it:
+
+```bash
+cd nyxhive
+bun run hive:start
+```
+
+### Ollama: chat returns empty or model shows "Offline"
+
+Make sure your `~/.nyxhive/config.yaml` has the `custom_providers` section and `API_SERVER_ENABLED=true` in `~/.nyxhive/.env`. See [Local Models](#-local-models-ollama-lm-studio-vllm) above.
+
+Also ensure Ollama is running with CORS enabled:
+
+```bash
+OLLAMA_ORIGINS=* ollama serve
+```
+
+Use `http://127.0.0.1:11434/v1` (not `localhost`) as the base URL.
+
+Verify: `curl http://localhost:3777/health` should return `{"status": "ok"}`.
+
+### "Using upstream NousResearch/nyxhive"
+
+The upstream nyxhive supports basic chat via `bun run hive:start`, but doesn't include extended endpoints (sessions, memory, skills, config) yet. The workspace will work in **portable mode** with basic chat. For full features, use our fork (`outsourc-e/nyxhive`).
+
+### Docker: "Unauthorized" or "Connection refused" to nyxhive
+
+If using Docker Compose and getting auth errors:
+
+1. **Check your API key is set:**
+
+   ```bash
+   cat .env | grep ANTHROPIC_API_KEY
+   # Should show: ANTHROPIC_API_KEY=fake-anthropic-key
+   ```
+
+2. **View the agent container logs:**
+
+   ```bash
+   docker compose logs nyxhive
+   ```
+
+   Look for startup errors or missing API key warnings.
+
+3. **Verify the agent health endpoint:**
+
+   ```bash
+   curl http://localhost:3777/health
+   # Should return: {"status": "ok"}
+   ```
+
+4. **Restart with fresh containers:**
+
+   ```bash
+   docker compose down
+   docker compose up --build
+   ```
+
+5. **Check workspace logs for gateway status:**
+   ```bash
+   docker compose logs nyx-workspace
+   ```
+   Look for: `[gateway] http://nyxhive:3777 mode=...` — if it shows `mode=disconnected`, the agent isn't running correctly.
+
+### Docker: "legacy webapi command not found"
+
+The old webapi command referenced in upstream docs doesn't exist here. The correct command is:
+
+```bash
+bun run hive:start   # Starts the Nyx gateway
+```
+
+The Docker setup uses `bun run hive:start` automatically — no action needed if using `docker compose up`.
+
+---
+
+## 🗺️ Roadmap
+
+| Feature                       | Status            |
+| ----------------------------- | ----------------- |
+| Chat + SSE Streaming          | ✅ Shipped        |
+| Files + Terminal              | ✅ Shipped        |
+| Memory Browser                | ✅ Shipped        |
+| Skills Browser                | ✅ Shipped        |
+| Mobile PWA + Tailscale        | ✅ Shipped        |
+| 8-Theme System                | ✅ Shipped        |
+| Native Desktop App (Electron) | 🔨 In Development |
+| Model Switching & Config      | 🔨 In Development |
+| Chat Abort / Cancel           | 🔨 In Development |
+| Cloud / Hosted Version        | 🔜 Coming Soon    |
+| Team Collaboration            | 🔜 Coming Soon    |
+
+---
+
+## ⭐ Star History
+
+## [![Star History Chart](https://api.star-history.com/svg?repos=outsourc-e/nyx-workspace&type=date&logscale&legend=top-left)](https://www.star-history.com/#outsourc-e/nyx-workspace&type=date&logscale&legend=top-left)
+
+## 💛 Support the Project
+
+Nyx Workspace is free and open source. If it's saving you time and powering your workflow, consider supporting development:
+
+**ETH:** `0xB332D4C60f6FBd94913e3Fd40d77e3FE901FAe22`
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink?logo=github)](https://github.com/sponsors/outsourc-e)
+
+Every contribution helps keep this project moving. Thank you 🙏
+
+---
+
+## 🤝 Contributing
+
+PRs are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+- Bug fixes → open a PR directly
+- New features → open an issue first to discuss
+- Security issues → see [SECURITY.md](SECURITY.md) for responsible disclosure
+
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+  <sub>Built with ⚡ by <a href="https://github.com/outsourc-e">@outsourc-e</a> and the Nyx Workspace community</sub>
+</div>

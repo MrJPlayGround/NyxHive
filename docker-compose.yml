@@ -1,0 +1,12 @@
+services:
+  nyxhive:
+    build: .
+    ports:
+      - "${NYX_PORT:-3777}:3777"
+    volumes:
+      - ./config:/app/config:ro
+      - ./data:/app/data
+      - ./workspace:/app/workspace
+    env_file: .env
+    restart: unless-stopped
+    mem_limit: 2g

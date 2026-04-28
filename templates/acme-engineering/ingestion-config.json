@@ -1,0 +1,18 @@
+{
+  "priorityRules": [
+    { "pattern": "**/Generic ETL Template*", "priority": 3 },
+    { "pattern": "**/Build Standards*", "priority": 3 },
+    { "pattern": "**/Example Gold Standard*", "priority": 3 },
+    { "pattern": "**/Integration Registry*", "priority": 3 },
+    { "pattern": "**/Example API*", "priority": 3 },
+    { "pattern": "**/Example Architecture*", "priority": 2 },
+    { "pattern": "**/Learnings*", "priority": 2 },
+    { "pattern": "**/API Patterns*", "priority": 2 },
+    { "pattern": "**/Code Conventions*", "priority": 2 },
+    { "pattern": "**/Testing Standards*", "priority": 2 },
+    { "pattern": "**/Infrastructure*", "priority": 2 },
+    { "pattern": "**/Troubleshooting Guide*", "priority": 2 },
+    { "pattern": "Projects/Integrations/**", "priority": 2 },
+    { "pattern": "Resources/API Docs/**", "priority": 1 }
+  ]
+}

@@ -1,0 +1,24 @@
+# Example: running multiple NyxHive instances
+# Copy and customize for your use case
+services:
+  atlas:
+    build: .
+    ports:
+      - "3778:3777"
+    volumes:
+      - ./instances/atlas/config:/app/config:ro
+      - ./instances/atlas/data:/app/data
+      - ./instances/atlas/workspace:/app/workspace
+    env_file: ./instances/atlas/.env
+    restart: unless-stopped
+
+  echo:
+    build: .
+    ports:
+      - "3779:3777"
+    volumes:
+      - ./instances/echo/config:/app/config:ro
+      - ./instances/echo/data:/app/data
+      - ./instances/echo/workspace:/app/workspace
+    env_file: ./instances/echo/.env
+    restart: unless-stopped

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 144" role="img" aria-labelledby="title">
+  <title id="title">NyxHive</title>
+  <defs>
+    <linearGradient id="nyxWordmarkLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2340"/>
+      <stop offset="0.48" stop-color="#4f46e5"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="nyxWordmarkLightShadow" x="-8%" y="-30%" width="116%" height="170%">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#64748b" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect width="720" height="144" fill="transparent"/>
+  <text
+    x="360"
+    y="94"
+    text-anchor="middle"
+    font-family="Impact, 'Arial Black', sans-serif"
+    font-size="82"
+    font-weight="900"
+    fill="url(#nyxWordmarkLight)"
+    stroke="#ffffff"
+    stroke-width="4"
+    paint-order="stroke fill"
+    filter="url(#nyxWordmarkLightShadow)"
+  >NYXHIVE</text>
+  <path d="M78 114H642" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+  <path d="M120 114H600" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round" opacity="0.65"/>
+</svg>

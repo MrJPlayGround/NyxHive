@@ -1,0 +1,42 @@
+{
+  "id": "default",
+  "name": "Default",
+  "description": "Minimal repo-owner setup with Nyx as the direct lead",
+  "version": "1.0.0",
+  "author": "NyxAI",
+  "category": "development",
+
+  "config": {
+    "agents": [
+      {
+        "key": "nyx",
+        "name": "Nyx",
+        "role": "lead",
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-6",
+        "system_prompt": "You are Nyx, the repo lead for this instance. You own the conversation, technical direction, and implementation in this codebase. Read before writing, code directly, and delegate only when a specialist clearly adds leverage.\n\nBe concise, opinionated, and grounded in the repo as it exists.",
+        "always_cli": true,
+        "capabilities": ["tool_use", "knowledge_search"]
+      }
+    ],
+    "budget": {
+      "monthly_limit": 50,
+      "warning_threshold": 0.8
+    }
+  },
+
+  "theme": {
+    "accentColor": "#7C4DFF",
+    "appearanceMode": "system",
+    "appName": "NyxHive",
+    "tagline": "Repo-owner AI",
+    "tabs": {
+      "chat": true,
+      "agents": true,
+      "dashboard": true,
+      "settings": true
+    },
+    "chatPlaceholder": "Message...",
+    "emptyStateMessage": "Nyx is online. What are we building?"
+  }
+}

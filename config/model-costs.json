@@ -1,0 +1,14 @@
+{
+  "claude-opus-4-6": { "input": 5, "output": 25 },
+  "claude-sonnet-4-6": { "input": 3, "output": 15 },
+  "claude-haiku-4-5-20251001": { "input": 0.8, "output": 4 },
+  "MiniMax-M2.5": { "input": 0, "output": 0 },
+  "deepseek/deepseek-v3.2": { "input": 0.26, "output": 0.38 },
+  "google/gemini-2.5-flash": { "input": 0.30, "output": 2.50 },
+  "google/gemini-2.5-flash-lite": { "input": 0.10, "output": 0.40 },
+  "google/gemini-2.0-flash-lite-001": { "input": 0.075, "output": 0.30 },
+  "google/gemini-2.5-pro": { "input": 1.25, "output": 10 },
+  "openai/gpt-oss-120b": { "input": 0.039, "output": 0.19 },
+  "qwen/qwen3-235b-a22b-2507": { "input": 0.071, "output": 0.10 },
+  "xiaomi/mimo-v2-flash": { "input": 0.09, "output": 0.29 }
+}

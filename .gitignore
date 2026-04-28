@@ -1,0 +1,37 @@
+node_modules/
+dist/
+/lib/
+data/
+data-*/
+.env
+.nyxhive/
+.nyxhive/.env
+.nyxhive/env
+.claude/
+.claude-plugin/
+*.log
+.DS_Store
+workspace/
+workspace-*/
+.worktrees/
+*.db
+*.db-wal
+*.db-shm
+*.pem
+*.key
+*.pfx
+lib/index.js
+PLATFORM.md
+AGENTS.md
+.superpowers/brainstorm/
+tests/
+.playwright-mcp/
+scripts/llm-benchmark/out/
+/nyx
+.omx/
+
+# Generated procedural skills
+.nyxhive/skills/
+
+# Harness trajectory artifacts
+.nyxhive/trajectories/

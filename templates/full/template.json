@@ -1,0 +1,84 @@
+{
+  "id": "full",
+  "name": "Full Pipeline",
+  "description": "Lead-centric pipeline with review, research, scheduler, and learning",
+  "version": "1.0.0",
+  "author": "NyxAI",
+  "category": "development",
+
+  "config": {
+    "agents": [
+      {
+        "key": "nyx",
+        "name": "Nyx",
+        "role": "lead",
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-6",
+        "system_prompt": "You are Nyx, the repo lead for this instance. You own the conversation, technical direction, and code changes in the home repo. Implement directly, pull in @scholar for deep research, @sentinel for review, and @pulse for scheduled monitoring when that adds leverage.\n\nBe decisive, concise, and grounded in the current codebase.",
+        "always_cli": true,
+        "capabilities": ["tool_use", "knowledge_search"]
+      },
+      {
+        "key": "sentinel",
+        "name": "Sentinel",
+        "role": "reviewer",
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-6",
+        "system_prompt": "You are Sentinel, the code reviewer. You review pull requests, proposals, and code changes for quality, security, and correctness.\n\nBe thorough but pragmatic. Flag real issues, not style preferences. Check for security vulnerabilities, logic errors, and missing edge cases.",
+        "always_cli": true,
+        "min_model": "claude-sonnet-4-6",
+        "capabilities": ["code_review", "knowledge_search"]
+      },
+      {
+        "key": "scholar",
+        "name": "Scholar",
+        "role": "expert",
+        "provider": "openrouter",
+        "model": "deepseek/deepseek-v3.2",
+        "system_prompt": "You are Scholar, a research and knowledge specialist. You answer technical questions, analyze documentation, and provide deep-dive research on topics.\n\nCite sources when possible. Be thorough but concise.",
+        "capabilities": ["knowledge_search"]
+      },
+      {
+        "key": "pulse",
+        "name": "Pulse",
+        "role": "heartbeat",
+        "provider": "openrouter",
+        "model": "deepseek/deepseek-v3.2",
+        "system_prompt": "You are Pulse, the system health monitor. You run scheduled health checks, monitor codebase quality, and report on system status.\n\nBe factual and data-driven. Report numbers, not opinions.",
+        "capabilities": ["knowledge_search"]
+      }
+    ],
+    "routing": {
+      "coding": { "provider": "anthropic", "model": "claude-sonnet-4-6" },
+      "code_review": { "provider": "anthropic", "model": "claude-sonnet-4-6" },
+      "simple_qa": { "provider": "openrouter", "model": "deepseek/deepseek-v3.2" },
+      "conversation": { "provider": "openrouter", "model": "deepseek/deepseek-v3.2" }
+    },
+    "budget": {
+      "monthly_limit": 100,
+      "warning_threshold": 0.8
+    },
+    "scheduler": [
+      {
+        "name": "daily-health",
+        "schedule": "0 8 * * *",
+        "task": "Run a system health check: verify all agents respond, check budget usage, review recent errors"
+      }
+    ]
+  },
+
+  "theme": {
+    "accentColor": "#7C4DFF",
+    "appearanceMode": "system",
+    "appName": "NyxHive",
+    "tagline": "Lead-owned AI platform",
+    "tabs": {
+      "chat": true,
+      "agents": true,
+      "dashboard": true,
+      "settings": true
+    },
+    "chatPlaceholder": "Message...",
+    "emptyStateMessage": "Nyx is online. What are we shipping?"
+  }
+}

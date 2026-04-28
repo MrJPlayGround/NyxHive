@@ -1,0 +1,76 @@
+{
+  "name": "nyxhive",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/framework/index.ts",
+    "./channels": "./src/framework/channels/index.ts"
+  },
+  "workspaces": [
+    "src/gateway",
+    "src/nyx-workspace"
+  ],
+  "bin": {
+    "nyxhive": "./src/cli/index.ts",
+    "nyx": "./src/nyx/index.ts"
+  },
+  "files": [
+    "src/",
+    "souls/",
+    "templates/",
+    "config/",
+    "skills/",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun --watch run src/index.ts",
+    "hive:start": "bun run src/cli/index.ts start --config .nyxhive/config.toml --daemon",
+    "hive:dev": "bun run src/cli/index.ts start --config .nyxhive/config.toml",
+    "hive:stop": "bun run src/cli/index.ts stop --config .nyxhive/config.toml",
+    "hive:status": "bun run src/cli/index.ts status --config .nyxhive/config.toml",
+    "hive:logs": "bun run src/cli/index.ts logs --config .nyxhive/config.toml",
+    "ingest": "bun run src/cli/ingest.ts",
+    "test": "bun test",
+    "typecheck": "bun x tsc --noEmit",
+    "test:watch": "bun test --watch",
+    "lint": "biome lint src/",
+    "lint:fix": "biome lint --apply src/",
+    "gateway:dev": "bun --filter @nyxhive/gateway dev",
+    "gateway:build": "bun --filter @nyxhive/gateway build",
+    "gateway:preview": "bun --filter @nyxhive/gateway preview",
+    "workspace:dev": "bun --cwd src/nyx-workspace dev",
+    "workspace:build": "bun --cwd src/nyx-workspace build",
+    "workspace:preview": "bun --cwd src/nyx-workspace preview",
+    "benchmark:parity": "bun run scripts/instance-parity-benchmark.ts",
+    "conversation:quality": "bun run scripts/conversation-quality-report.ts",
+    "conversation:transcript-review": "bun run scripts/transcript-review-report.ts",
+    "memory:eval": "bun run scripts/memory-eval-report.ts",
+    "benchmark:turboquant": "bun run scripts/llm-benchmark/turboquant.ts",
+    "build:nyx": "bun build --compile --minify src/nyx/index.ts --outfile nyx",
+    "lint:critical": "biome lint src/queue/processor.ts src/__tests__/processor.test.ts src/__tests__/processor-session-runtime.test.ts src/__tests__/processor-trust.test.ts src/nyx-workspace/src/lib/theme.ts src/nyx-workspace/src/lib/theme.test.ts src/nyx-workspace/src/routes/api/knowledge/sync.ts src/nyx-workspace/src/components/onboarding/provider-select-step.tsx src/nyx-workspace/src/lib/provider-catalog.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@clack/prompts": "^1.2.0",
+    "@iarna/toml": "^2.2.5",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@openai/agents": "^0.8.4",
+    "@openai/codex-sdk": "0.121.0",
+    "@slack/bolt": "^4.6.0",
+    "citty": "^0.2.2",
+    "discord.js": "^14.25.1",
+    "grammy": "^1.35.0",
+    "hono": "^4.7.0",
+    "js-tiktoken": "^1.0.21",
+    "picocolors": "^1.1.1",
+    "yaml": "^2.8.2",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  }
+}

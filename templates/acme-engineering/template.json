@@ -1,0 +1,98 @@
+{
+  "id": "acme-engineering",
+  "name": "Acme Engineering",
+  "description": "Example engineering workspace for integrations, ETL pipelines, and API knowledge",
+  "version": "1.0.0",
+  "author": "NyxHive",
+  "category": "engineering",
+
+  "config": {
+    "agents": [
+      {
+        "key": "lead",
+        "name": "Lead",
+        "role": "lead",
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-6",
+        "system_prompt": "You are Lead, the engineering lead for Acme. You own the conversation and direct implementation guidance for integrations, ETL pipelines, and API-facing work.\n\nYour knowledge base contains example integration registry notes, API documentation, ETL patterns, build standards, and operational learnings.\n\nWhen answering questions:\n- Cite your sources: document title, section, and category\n- For integration questions, reference the specific integration's sync board\n- For ETL work, reference the Generic ETL Template and Build Standards\n- For API questions, include auth method, rate limits, and pagination details\n- Flag any integration status issues from the registry\n\nYou implement or direct the repo-owned path yourself, delegate to @reviewer for code review tasks, and use @integration-spec for deep integration dives.",
+        "always_cli": true,
+        "capabilities": ["tool_use", "knowledge_search"]
+      },
+      {
+        "key": "reviewer",
+        "name": "Reviewer",
+        "role": "reviewer",
+        "provider": "anthropic",
+        "model": "claude-sonnet-4-6",
+        "system_prompt": "You are Reviewer, a code review specialist for Acme. You review tap/target/ETL code against example Build Standards and Code Conventions.\n\nKey review criteria:\n- Entity processing order\n- Snapshot diff algorithm correctness\n- ID resolution patterns\n- API request patterns\n- Error handling and retry logic\n- Test coverage per Build Standards checklist\n\nReference the Example Gold Standard for complex integration patterns. Always check the Generic ETL Template for canonical implementation.",
+        "always_cli": true,
+        "min_model": "claude-sonnet-4-6",
+        "capabilities": ["code_review", "knowledge_search"]
+      },
+      {
+        "key": "integration-spec",
+        "name": "Integration Specialist",
+        "role": "worker",
+        "provider": "openrouter",
+        "model": "qwen/qwen3-235b-a22b-2507",
+        "system_prompt": "You are Integration Specialist, an expert on Acme's example integrations. You know integration sync direction, entity mappings, auth method, API quirks, and current status.\n\nWhen asked about a specific integration:\n1. Reference its integration project page\n2. Include API doc details\n3. Note any known issues from Learnings\n4. Reference related request examples\n\nFor new integration work, start from the Generic ETL Template and adapt.",
+        "capabilities": ["knowledge_search"]
+      }
+    ],
+    "routing": {
+      "coding": { "provider": "anthropic", "model": "claude-sonnet-4-6" },
+      "code_review": { "provider": "anthropic", "model": "claude-sonnet-4-6" },
+      "simple_qa": { "provider": "openrouter", "model": "qwen/qwen3-235b-a22b-2507" },
+      "conversation": { "provider": "openrouter", "model": "qwen/qwen3-235b-a22b-2507" },
+      "summarization": { "provider": "minimax", "model": "MiniMax-M2.5" }
+    },
+    "budget": {
+      "monthly_limit": 100,
+      "warning_threshold": 0.8
+    },
+    "scheduler": [
+      {
+        "name": "vault-reingest",
+        "schedule": "0 3 * * *",
+        "task": "Re-ingest Acme example vault for knowledge freshness"
+      }
+    ]
+  },
+
+  "theme": {
+    "accentColor": "#2196F3",
+    "appearanceMode": "system",
+    "appName": "Acme Eng",
+    "tagline": "Example engineering lead workspace",
+    "tabs": {
+      "chat": true,
+      "agents": true,
+      "dashboard": false,
+      "settings": true
+    },
+    "chatPlaceholder": "Ask about integrations, APIs, ETL patterns...",
+    "emptyStateMessage": "Acme Lead is online. What system are we fixing?"
+  },
+
+  "knowledge": {
+    "vault_path": "~/example-vaults/acme-engineering",
+    "categories": [
+      "architecture",
+      "integrations",
+      "api-docs",
+      "standards",
+      "operations",
+      "learnings"
+    ],
+    "description": "Example integration knowledge base: API docs, ETL patterns, build standards, operational learnings",
+    "exclude": [
+      "Templates/**",
+      "Daily/**",
+      "Archive/**",
+      "Handoff/**",
+      ".obsidian/**",
+      ".git/**",
+      ".smart-connections/**"
+    ]
+  }
+}

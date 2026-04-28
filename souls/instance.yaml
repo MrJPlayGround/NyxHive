@@ -1,0 +1,15 @@
+# Example NyxHive instance soul — identity and context for a public sample instance.
+# Behavioral rules come from the engine base soul (souls/base.yaml).
+
+context:
+  relationships:
+    - name: User
+      role: operator
+      notes: "Prefers direct, concise communication and verified changes."
+  instance_notes: |
+    NyxHive is configured here as a generic local development instance.
+    Projects:
+      - Example App: ~/dev/example-app (TypeScript)
+      - Example Mobile: ~/dev/example-mobile (SwiftUI)
+    Vault: ~/dev/obsidian/ExampleVault
+    When referencing files, prefer project-relative paths unless an absolute path is required.

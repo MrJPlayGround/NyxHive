@@ -1,0 +1,342 @@
+{
+  "scores": [
+    {
+      "model": "gemma3:4b",
+      "total": 30,
+      "correct": 19,
+      "accuracy": 0.6333333333333333,
+      "avgLatencyMs": 354,
+      "p95LatencyMs": 400,
+      "byCategory": {
+        "heartbeat_triage": {
+          "total": 8,
+          "correct": 7,
+          "accuracy": 0.875
+        },
+        "escalation": {
+          "total": 8,
+          "correct": 3,
+          "accuracy": 0.375
+        },
+        "routing": {
+          "total": 7,
+          "correct": 6,
+          "accuracy": 0.8571428571428571
+        },
+        "pre_screening": {
+          "total": 7,
+          "correct": 3,
+          "accuracy": 0.42857142857142855
+        }
+      }
+    },
+    {
+      "model": "phi4-mini:latest",
+      "total": 30,
+      "correct": 16,
+      "accuracy": 0.5333333333333333,
+      "avgLatencyMs": 275,
+      "p95LatencyMs": 332,
+      "byCategory": {
+        "heartbeat_triage": {
+          "total": 8,
+          "correct": 7,
+          "accuracy": 0.875
+        },
+        "escalation": {
+          "total": 8,
+          "correct": 3,
+          "accuracy": 0.375
+        },
+        "routing": {
+          "total": 7,
+          "correct": 3,
+          "accuracy": 0.42857142857142855
+        },
+        "pre_screening": {
+          "total": 7,
+          "correct": 3,
+          "accuracy": 0.42857142857142855
+        }
+      }
+    },
+    {
+      "model": "llama3.2:3b",
+      "total": 30,
+      "correct": 19,
+      "accuracy": 0.6333333333333333,
+      "avgLatencyMs": 233,
+      "p95LatencyMs": 285,
+      "byCategory": {
+        "heartbeat_triage": {
+          "total": 8,
+          "correct": 6,
+          "accuracy": 0.75
+        },
+        "escalation": {
+          "total": 8,
+          "correct": 4,
+          "accuracy": 0.5
+        },
+        "routing": {
+          "total": 7,
+          "correct": 4,
+          "accuracy": 0.5714285714285714
+        },
+        "pre_screening": {
+          "total": 7,
+          "correct": 5,
+          "accuracy": 0.7142857142857143
+        }
+      }
+    }
+  ],
+  "ramUsage": {
+    "gemma3:4b": 4112,
+    "phi4-mini:latest": 3137,
+    "llama3.2:3b": 2623
+  },
+  "ramSnapshots": [
+    {
+      "model": "gemma3:4b",
+      "phase": "before_load",
+      "modelRamMB": 0,
+      "systemUsedMB": 4996,
+      "systemFreeMB": 10468,
+      "pressure": "moderate"
+    },
+    {
+      "model": "gemma3:4b",
+      "phase": "after_load",
+      "modelRamMB": 4112,
+      "systemUsedMB": 9552,
+      "systemFreeMB": 5912,
+      "pressure": "moderate"
+    },
+    {
+      "model": "gemma3:4b",
+      "phase": "mid_5",
+      "modelRamMB": 4112,
+      "systemUsedMB": 10015,
+      "systemFreeMB": 5475,
+      "pressure": "moderate"
+    },
+    {
+      "model": "gemma3:4b",
+      "phase": "mid_10",
+      "modelRamMB": 4112,
+      "systemUsedMB": 9978,
+      "systemFreeMB": 5517,
+      "pressure": "moderate"
+    },
+    {
+      "model": "gemma3:4b",
+      "phase": "mid_15",
+      "modelRamMB": 4112,
+      "systemUsedMB": 9976,
+      "systemFreeMB": 5520,
+      "pressure": "moderate"
+    },
+    {
+      "model": "gemma3:4b",
+      "phase": "mid_20",
+      "modelRamMB": 4112,
+      "systemUsedMB": 9987,
+      "systemFreeMB": 5508,
+      "pressure": "moderate"
+    },
+    {
+      "model": "gemma3:4b",
+      "phase": "mid_25",
+      "modelRamMB": 4112,
+      "systemUsedMB": 10001,
+      "systemFreeMB": 5495,
+      "pressure": "moderate"
+    },
+    {
+      "model": "gemma3:4b",
+      "phase": "mid_30",
+      "modelRamMB": 4112,
+      "systemUsedMB": 10017,
+      "systemFreeMB": 5480,
+      "pressure": "moderate"
+    },
+    {
+      "model": "gemma3:4b",
+      "phase": "after_benchmark",
+      "modelRamMB": 4112,
+      "systemUsedMB": 10017,
+      "systemFreeMB": 5481,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "before_load",
+      "modelRamMB": 0,
+      "systemUsedMB": 5504,
+      "systemFreeMB": 9994,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "after_load",
+      "modelRamMB": 3137,
+      "systemUsedMB": 8948,
+      "systemFreeMB": 6552,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "mid_5",
+      "modelRamMB": 3137,
+      "systemUsedMB": 8963,
+      "systemFreeMB": 6537,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "mid_10",
+      "modelRamMB": 3137,
+      "systemUsedMB": 8690,
+      "systemFreeMB": 6810,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "mid_15",
+      "modelRamMB": 3137,
+      "systemUsedMB": 8725,
+      "systemFreeMB": 6775,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "mid_20",
+      "modelRamMB": 3137,
+      "systemUsedMB": 8741,
+      "systemFreeMB": 6758,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "mid_25",
+      "modelRamMB": 3137,
+      "systemUsedMB": 8751,
+      "systemFreeMB": 6749,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "mid_30",
+      "modelRamMB": 3137,
+      "systemUsedMB": 8822,
+      "systemFreeMB": 6678,
+      "pressure": "moderate"
+    },
+    {
+      "model": "phi4-mini:latest",
+      "phase": "after_benchmark",
+      "modelRamMB": 3137,
+      "systemUsedMB": 8824,
+      "systemFreeMB": 6677,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "before_load",
+      "modelRamMB": 0,
+      "systemUsedMB": 6864,
+      "systemFreeMB": 8635,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "after_load",
+      "modelRamMB": 2623,
+      "systemUsedMB": 8274,
+      "systemFreeMB": 7227,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "mid_5",
+      "modelRamMB": 2623,
+      "systemUsedMB": 8287,
+      "systemFreeMB": 7213,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "mid_10",
+      "modelRamMB": 2623,
+      "systemUsedMB": 8308,
+      "systemFreeMB": 7191,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "mid_15",
+      "modelRamMB": 2623,
+      "systemUsedMB": 8405,
+      "systemFreeMB": 7096,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "mid_20",
+      "modelRamMB": 2623,
+      "systemUsedMB": 8406,
+      "systemFreeMB": 7094,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "mid_25",
+      "modelRamMB": 2623,
+      "systemUsedMB": 8413,
+      "systemFreeMB": 7087,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "mid_30",
+      "modelRamMB": 2623,
+      "systemUsedMB": 8427,
+      "systemFreeMB": 7080,
+      "pressure": "moderate"
+    },
+    {
+      "model": "llama3.2:3b",
+      "phase": "after_benchmark",
+      "modelRamMB": 2623,
+      "systemUsedMB": 8427,
+      "systemFreeMB": 7077,
+      "pressure": "moderate"
+    }
+  ],
+  "composite": [
+    {
+      "model": "llama3.2:3b",
+      "accScore": 38,
+      "latScore": 8.545197740112995,
+      "ramScore": 5.4316634241245145,
+      "total": 51.97686116423751
+    },
+    {
+      "model": "phi4-mini:latest",
+      "accScore": 32,
+      "latScore": 5.5790960451977405,
+      "ramScore": 3.5566634241245145,
+      "total": 41.13575946932226
+    },
+    {
+      "model": "gemma3:4b",
+      "accScore": 38,
+      "latScore": 0,
+      "ramScore": 0,
+      "total": 38
+    }
+  ],
+  "winner": "llama3.2:3b",
+  "timestamp": "2026-03-29T14:35:05.906Z"
+}

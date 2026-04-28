@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# NyxHive CLI wrapper — resolves symlinks and delegates to TS CLI
+
+set -euo pipefail
+
+# Follow symlinks to find the real location
+SOURCE="${BASH_SOURCE[0]}"
+while [ -L "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+BIN_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+PROJECT_ROOT="$(cd "$BIN_DIR/.." && pwd)"
+
+export NYXHIVE_HOME="${NYXHIVE_HOME:-$HOME/.nyxhive}"
+
+exec bun run "$PROJECT_ROOT/src/cli/index.ts" "$@"

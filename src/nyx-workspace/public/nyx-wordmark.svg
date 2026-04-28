@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 144" role="img" aria-labelledby="title">
+  <title id="title">NyxHive</title>
+  <defs>
+    <linearGradient id="nyxWordmarkGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff36b"/>
+      <stop offset="0.42" stop-color="#ffd51d"/>
+      <stop offset="0.72" stop-color="#c88028"/>
+      <stop offset="1" stop-color="#73421e"/>
+    </linearGradient>
+    <filter id="nyxWordmarkGlow" x="-8%" y="-30%" width="116%" height="170%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#ffd51d" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <rect width="720" height="144" fill="transparent"/>
+  <text
+    x="360"
+    y="94"
+    text-anchor="middle"
+    font-family="Impact, 'Arial Black', sans-serif"
+    font-size="82"
+    font-weight="900"
+    fill="url(#nyxWordmarkGold)"
+    stroke="#151515"
+    stroke-width="4"
+    paint-order="stroke fill"
+    filter="url(#nyxWordmarkGlow)"
+  >NYXHIVE</text>
+  <path d="M78 114H642" stroke="#21160a" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+  <path d="M120 114H600" stroke="#e0a33a" stroke-width="1.5" stroke-linecap="round" opacity="0.65"/>
+</svg>

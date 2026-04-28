@@ -1,0 +1,71 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noConsoleLog": "off",
+        "noControlCharactersInRegex": "off",
+        "noAssignInExpressions": "off",
+        "noImplicitAnyLet": "off",
+        "noGlobalIsNan": "off",
+        "noConfusingVoidType": "off",
+        "noDoubleEquals": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "off",
+        "noUnusedImports": "off",
+        "useExhaustiveDependencies": "off",
+        "noUnnecessaryContinue": "off",
+        "noUnreachable": "off",
+        "noVoidTypeReturn": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "useTemplate": "off",
+        "noUnusedTemplateLiteral": "off",
+        "useConst": "off",
+        "useAsConstAssertion": "off",
+        "noInferrableTypes": "off",
+        "useNumberNamespace": "off",
+        "useImportType": "off"
+      },
+      "performance": {
+        "noDelete": "off",
+        "noAccumulatingSpread": "off"
+      },
+      "complexity": {
+        "useLiteralKeys": "off",
+        "noUselessSwitchCase": "off",
+        "noForEach": "off",
+        "useOptionalChain": "off",
+        "noUselessTernary": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": false
+  },
+  "javascript": {
+    "globals": []
+  },
+  "files": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "ignore": [
+      "src/__tests__/**",
+      "node_modules/**",
+      "dist/**",
+      "lib/**",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "src/nyx-workspace/src/routeTree.gen.ts"
+    ]
+  }
+}

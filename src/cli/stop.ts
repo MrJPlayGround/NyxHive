@@ -1,0 +1,198 @@
+import { resolve } from "node:path";
+import { existsSync, readFileSync, readdirSync, unlinkSync } from "node:fs";
+import { loadConfig } from "../config.js";
+import { resolveInstance, loadInstanceEnv } from "./resolve.js";
+import { logger } from "../utils/logger.js";
+
+function parseArgs() {
+  const args = process.argv.slice(3);
+  let configPath: string | undefined;
+  let instanceName: string | undefined;
+  let force = false;
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--config" && i + 1 < args.length) {
+      configPath = args[++i];
+    } else if (args[i] === "--force" || args[i] === "-f") {
+      force = true;
+    } else if (!args[i].startsWith("--")) {
+      instanceName = args[i];
+    }
+  }
+
+  return { configPath, instanceName, force };
+}
+
+function killProcess(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    process.kill(pid, "SIGKILL");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function forceKillAll() {
+  const NYXHIVE_HOME = process.env.NYXHIVE_HOME ?? resolve(process.env.HOME!, ".nyxhive");
+  logger.info("EMERGENCY KILL — all NyxHive processes\n");
+  let killed = 0;
+
+  const instancesDir = resolve(NYXHIVE_HOME, "instances");
+  if (existsSync(instancesDir)) {
+    for (const name of readdirSync(instancesDir)) {
+      const pidFile = resolve(instancesDir, name, "data", "nyxhive.pid");
+      if (!existsSync(pidFile)) continue;
+      const pid = Number.parseInt(readFileSync(pidFile, "utf-8").trim(), 10);
+      if (killProcess(pid)) {
+        logger.info(`  Killed ${name} (PID ${pid})`);
+        killed++;
+      }
+      unlinkSync(pidFile);
+      try {
+        const workspace = resolve(instancesDir, name, "workspace");
+        const result = Bun.spawnSync(["pgrep", "-f", `claude.*${workspace}`]);
+        const pids = new TextDecoder().decode(result.stdout).trim().split("\n").filter(Boolean);
+        for (const pidStr of pids) {
+          const pid = Number.parseInt(pidStr, 10);
+          if (killProcess(pid)) {
+            logger.info(`  Killed ${name} workspace claude (PID ${pid})`);
+            killed++;
+          }
+        }
+      } catch {
+        // pgrep not found or no matches
+      }
+    }
+  }
+
+  if (killed === 0) logger.info("  No running processes found");
+}
+
+function forceKillInstance(instanceDir: string, config: ReturnType<typeof loadConfig>) {
+  const dataDir = resolve(config.daemon.data_dir);
+  const pidFile = resolve(dataDir, "nyxhive.pid");
+  const port = config.server.port;
+
+  logger.info(`EMERGENCY KILL — ${config.daemon.name}\n`);
+  let killed = false;
+
+  if (existsSync(pidFile)) {
+    const pid = Number.parseInt(readFileSync(pidFile, "utf-8").trim(), 10);
+    if (killProcess(pid)) {
+      logger.info(`  Killed main process (PID ${pid})`);
+      killed = true;
+      try {
+        const result = Bun.spawnSync(["pgrep", "-P", String(pid)]);
+        const children = new TextDecoder().decode(result.stdout).trim().split("\n").filter(Boolean);
+        for (const cpid of children) {
+          killProcess(Number.parseInt(cpid, 10));
+          logger.info(`  Killed child process (PID ${cpid})`);
+        }
+      } catch {}
+    }
+    unlinkSync(pidFile);
+  }
+
+  if (!killed) {
+    try {
+      const result = Bun.spawnSync(["lsof", "-t", `-i:${port}`]);
+      const portPid = new TextDecoder().decode(result.stdout).trim().split("\n")[0];
+      if (portPid) {
+        killProcess(Number.parseInt(portPid, 10));
+        logger.info(`  Killed orphaned process (PID ${portPid}) on port ${port}`);
+        killed = true;
+      }
+    } catch {}
+  }
+
+  // Kill claude processes in this instance's workspace
+  try {
+    const workspace = resolve(instanceDir, "workspace");
+    const result = Bun.spawnSync(["pgrep", "-f", `claude.*${workspace}`]);
+    const pids = new TextDecoder().decode(result.stdout).trim().split("\n").filter(Boolean);
+    for (const pidStr of pids) {
+      killProcess(Number.parseInt(pidStr, 10));
+      logger.info(`  Killed workspace claude (PID ${pidStr})`);
+    }
+  } catch {}
+
+  if (!killed) logger.info("  No running process found");
+}
+
+async function main() {
+  const { configPath, instanceName, force } = parseArgs();
+
+  // --force without instance name: kill everything
+  if (force && !instanceName && !configPath) {
+    forceKillAll();
+    return;
+  }
+
+  const { configPath: resolved, instanceDir } = resolveInstance(
+    instanceName,
+    undefined,
+    configPath,
+  );
+  loadInstanceEnv(instanceDir);
+
+  const config = loadConfig(resolved);
+
+  // --force: SIGKILL + hunt children
+  if (force) {
+    forceKillInstance(instanceDir, config);
+    return;
+  }
+
+  const dataDir = resolve(config.daemon.data_dir);
+  const pidFile = resolve(dataDir, "nyxhive.pid");
+  const port = config.server.port;
+
+  let pid: number | null = null;
+  let stopped = false;
+
+  // Check PID file
+  if (existsSync(pidFile)) {
+    pid = Number.parseInt(readFileSync(pidFile, "utf-8").trim(), 10);
+    try {
+      process.kill(pid, 0); // Check if alive
+      process.kill(pid, "SIGTERM");
+      stopped = true;
+    } catch {
+      logger.warn(`Process ${pid} not found.`);
+    }
+    unlinkSync(pidFile);
+  }
+
+  // If no PID file or PID kill failed, try the API endpoint
+  if (!stopped) {
+    try {
+      const res = await fetch(`http://localhost:${port}/admin/shutdown`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        signal: AbortSignal.timeout(3000),
+      });
+      if (res.ok) {
+        logger.info(`${config.daemon.name} shutdown initiated via API`);
+        stopped = true;
+      }
+    } catch {
+      // API shutdown didn't work
+    }
+  }
+
+  if (stopped) {
+    logger.info(`${config.daemon.name} stopped`);
+  } else {
+    logger.error(`Failed to stop ${config.daemon.name}. Instance not found on port ${port} or PID not available.`);
+    logger.info("  Try: nyxhive stop --force");
+    process.exit(1);
+  }
+}
+
+main().catch((err) => {
+  logger.error(`Error: ${err}`);
+  process.exit(1);
+});

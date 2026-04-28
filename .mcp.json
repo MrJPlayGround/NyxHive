@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "nyxhive": {
+      "type": "http",
+      "url": "http://localhost:3777/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${NYXHIVE_API_KEY}"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--browser", "chrome",
+        "--user-data-dir", "./data/browser-profile"
+      ]
+    }
+  }
+}

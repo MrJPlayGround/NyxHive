@@ -1,0 +1,26 @@
+{
+  "claude": {
+    "instruction_style": "detailed",
+    "supports_tool_use": true,
+    "supports_structured_output": true,
+    "efficiency_note": "High context window (200k). Full detail and nuance is fine."
+  },
+  "gemini": {
+    "instruction_style": "concise",
+    "supports_tool_use": true,
+    "supports_structured_output": true,
+    "efficiency_note": "Keep instructions focused. Responds well to structured prompts."
+  },
+  "gpt": {
+    "instruction_style": "structured",
+    "supports_tool_use": true,
+    "supports_structured_output": true,
+    "efficiency_note": "Prefers numbered steps and clear structure. Strong at following explicit formats."
+  },
+  "openrouter": {
+    "instruction_style": "concise",
+    "supports_tool_use": false,
+    "supports_structured_output": false,
+    "efficiency_note": "Keep instructions minimal. Tool use and structured output may not be available."
+  }
+}
