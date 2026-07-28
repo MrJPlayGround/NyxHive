@@ -1690,8 +1690,8 @@ bot_token_env = "SLACK_BOT_TOKEN"        # default account (backward compat)
 app_token_env = "SLACK_APP_TOKEN"
 
 [slack.accounts.acme]
-bot_token_env = "OPTIPLY_SLACK_BOT_TOKEN"
-app_token_env = "OPTIPLY_SLACK_APP_TOKEN"
+bot_token_env = "ACME_SLACK_BOT_TOKEN"
+app_token_env = "ACME_SLACK_APP_TOKEN"
 channel_agents = { "C123" = "morph" }
 
 [slack.accounts.nyxai]

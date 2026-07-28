@@ -732,4 +732,4 @@ pnpm stop:stable   # Stop via scripts/stop-stable.sh
 
 ---
 
-_Generated from codebase analysis of `/Users/aurora/hermes-workspace/`_
+_Generated from codebase analysis of `/home/example/acme-workspace/`_
